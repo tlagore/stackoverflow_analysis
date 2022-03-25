@@ -23,21 +23,36 @@ class DataFrameHandler(data_dir: String) extends AutoCloseable
   println(s"Loading files from directory $data_dir")
 
   private[this] val soContext = new StackoverflowContext()
-  private[this] val postsFile = soContext.readFile(spark, data_dir, SOFile.Posts)
-  private[this] val tagsFile = soContext.readFile(spark, data_dir, SOFile.Tags)
-  private[this] val usersFile = soContext.readFile(spark, data_dir, SOFile.Users)
-  private[this] val languagesFile = soContext.readFile(spark, data_dir, SOFile.Languages)
+  private[this] val postsDF = soContext.readFile(spark, data_dir, SOFile.Posts)
+  private[this] val tagsDF = soContext.readFile(spark, data_dir, SOFile.Tags)
+  private[this] val usersDF = soContext.readFile(spark, data_dir, SOFile.Users)
+  private[this] val languagesDF = soContext.readFile(spark, data_dir, SOFile.Languages)
 
   def printSchemas(): Unit =
   {
-    postsFile.printSchema()
-    tagsFile.printSchema()
-    usersFile.printSchema()
-    languagesFile.printSchema()
+    postsDF.printSchema()
+    tagsDF.printSchema()
+    usersDF.printSchema()
+    languagesDF.printSchema()
   }
 
   def close(): Unit =
   {
     sc.stop()
+  }
+
+  def parse(): Unit =
+  {
+    val timeTaken = Utils.timeit {
+      postsDF.persist()
+      usersDF.persist()
+      val query = postsDF.join(right = usersDF, usingColumn = "userid").where("userid == 4089216")
+      println("Done")
+
+      print(query.show(10))
+      // print(query.collect().mkString("Array(", ", ", ")"))
+    }
+
+    println(s"Took ${timeTaken.toFloat/1000} seconds")
   }
 }

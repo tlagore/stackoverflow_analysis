@@ -10,6 +10,7 @@ object preprocessor extends App {
   {
       handler => {
         handler.printSchemas()
+        handler.parse()
       }
   }
 }

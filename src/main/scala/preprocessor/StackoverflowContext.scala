@@ -13,11 +13,11 @@ object SOFile extends Enumeration {
 class StackoverflowContext
 {
   private[this] val userSchema: StructType = new StructType()
-    .add("id", IntegerType, nullable = false)
+    .add("userid", IntegerType, nullable = false)
     .add("username", StringType, nullable = false)
 
   private[this] val postsSchema: StructType = new StructType()
-    .add("id", IntegerType, nullable = false)
+    .add("postid", IntegerType, nullable = false)
     .add("posttypeid", IntegerType, nullable = true)
     .add("parentid", IntegerType, nullable = true)
     .add("acceptedid", IntegerType, nullable = true)
@@ -32,11 +32,11 @@ class StackoverflowContext
     .add("postlastactivdate", DateType, nullable = true)
 
   private[this] val languageSchema: StructType = new StructType()
-    .add("id", IntegerType, nullable = false)
+    .add("languageid", IntegerType, nullable = false)
     .add("language", StringType, nullable = false)
 
   private[this] val postTagSchema: StructType = new StructType()
-    .add("id", IntegerType, nullable = false)
+    .add("posttagid", IntegerType, nullable = false)
     .add("tag", StringType, nullable = false)
 
   def getFileContext(file: SOFile.Value): (String, StructType) =
