@@ -1,18 +1,16 @@
 .mode csv
 .output data/baskets.csv
 
-WITH language_names AS
-    (SELECT language FROM languages),
+WITH summary AS 
 -- summary removes any nulls we want to avoid and checks only for questions 
 -- also ensures the tags are only languages
-summary AS 
     (SELECT users.userid, posts.postid, posttags.tag AS language FROM posts 
         JOIN users ON users.userid == posts.userid 
         JOIN posttags ON posttags.postid == posts.postid 
         WHERE posts.postid IS NOT NULL
         AND users.userid IS NOT NULL 
         AND posts.parentid IS NOT NULL
-        AND tag IN (SELECT * FROM language_names)
+        AND tag IN (SELECT language FROM languages)
         AND posts.posttypeid == 1),
 -- post_languages_count_of_1 gets only posts that have just 1 language in the tag
 post_languages_count_of_1 AS
@@ -34,12 +32,13 @@ known_languages AS (
     INNER JOIN post_languages_count_of_1 AS plc 
         ON plc.userid == s.userid AND plc.postid == s.postid
     INNER JOIN language_count_gt_1 AS lc 
-        ON lc.userid == s.userid AND lc.language == s.language
+        ON lc.userid == s.userid and lc.language == s.language
     )
 -- finalize the query by group_concating the languages into one row with a user
 SELECT userid, group_concat(languages)
     FROM known_languages
-    GROUP BY userid;
+    GROUP BY userid
+    HAVING COUNT(*) > 1;
 
 .output stdout
 .mode list

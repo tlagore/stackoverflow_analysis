@@ -1,19 +1,27 @@
 if [ -d "data" ]
 then
    #!/usr/bin/env bash
-   read -n 1 -r -p "Would you like to delete the temporary sqlite3 database after creating baskets.csv? (y/n):" response
+   read -n 1 -r -p "Would you like to delete the temporary sqlite3 database after creating baskets.csv? (y/n): " response
    echo ""
-   
-   echo -e "\e[1;32mLoading csvs into sqlite3 (loaddb.sql)...\e[0m"
-   time sqlite3 data/stackoverflowdb.db < loaddb.sql
+
+   if [ -f "data/stackoverflowdb.db" ]
+   then
+       read -n 1 -r -p "'data/stackoverflowdb.db' already existed. Reimport? (y/n): " continue
+       if [ "$continue" = "y"]
+       then
+	   echo -e "\e[1;32mLoading csvs into sqlite3 (loaddb.sql)...\e[0m"
+	   time sqlite3 data/stackoverflowdb.db < loaddb.sql
+       fi
+   fi
 
    echo -e "\e[1;32mPerforming basket query to export to baskets.csv (basket_query.sql)...\e[0m"
    time sqlite3 data/stackoverflowdb.db < basket_query.sql
 
-   echo -e "\e[1;32mRemoving quotations from language column...\e[0m"
+   echo -e "\e[1;32mRemoving quotations from language column and renaming to 'baskets.txt'...\e[0m"
    # sed script obtained from https://stackoverflow.com/a/38159593/4089216
    time sed -i 's/\"//g' data/baskets.csv
-
+   mv data/baskets.csv data/baskets.txt
+   
    if [ "$response" = "y" ]
    then
        echo -e "\e[1;33mDeleting temporary database 'data/stackoverflowdb.db'\e[0m"
