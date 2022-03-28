@@ -23,10 +23,12 @@ The following requirements must be met for a user to "know" (or be learning) a l
 Expected output:
 **txt file** with each line being of the format
 
-<userid>,<language1>,<language2>,...<languagen>
+`<userid>,<language1>,<language2>,...<languagen>`
 
 example:
+```
 1324763,c#,javascript
 132475,php,sql
 1324631,c,c++,java,matlab,postscript,python
-
+...
+```
