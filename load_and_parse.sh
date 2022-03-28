@@ -1,3 +1,6 @@
+response=""
+reimport=""
+
 if [ -d "data" ]
 then
     #!/usr/bin/env bash
