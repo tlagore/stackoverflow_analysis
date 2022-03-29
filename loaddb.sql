@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS "languages";
 DROP TABLE IF EXISTS posttags;
 DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS known_languages;
 
 CREATE TABLE users (
     "userid" INTEGER,
@@ -32,6 +33,12 @@ CREATE TABLE posts (
     commentcount INTEGER,
     favoritecount INTEGER,
     postlastactivdate TEXT
+);
+
+CREATE TABLE known_languages (
+    userid INTEGER,
+    languageid INTEGER,
+    language TEXT
 );
 
 .mode csv

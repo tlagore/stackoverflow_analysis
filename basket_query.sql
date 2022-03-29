@@ -1,7 +1,5 @@
-.mode csv
-.output data/baskets.csv
+DELETE FROM known_languages;
 
--- SQLite
 WITH summary AS 
 -- summary removes any nulls we want to avoid and checks only for questions 
 -- also ensures the tags are only languages
@@ -44,7 +42,7 @@ answered_own AS (
 -- languages that have a count gt 1 and post languages of just 1
 -- also selects only distinct. Users will have 1 language per row
 known_languages AS (
-    SELECT DISTINCT s.userid, s.language AS languages FROM filtered AS s
+    SELECT DISTINCT s.userid, s.language AS language FROM filtered AS s
     INNER JOIN post_languages_count_of_1 AS plc
         ON plc.userid == s.userid AND plc.postid == s.postid
     INNER JOIN language_count_gt_1 AS lc
@@ -57,8 +55,28 @@ known_languages AS (
                 s.userid == ao.userid)
     )
 -- finalize the query by group_concating the languages into one row with a user
-SELECT userid, group_concat(languages)
+INSERT INTO known_languages (userid, languageid, language) 
+    SELECT kl.userid, l.languageid, kl.language FROM known_languages AS kl
+    JOIN languages AS l ON l.language = kl.language
+    ORDER BY languageid;
+
+
+.mode csv
+.output data/baskets.txt
+
+-- create temporary baskets.txt file (needs to be stripped of quotation marks)
+SELECT userid, group_concat(language)
     FROM known_languages
+    GROUP BY userid;
+
+.output data/documents.txt
+
+WITH joined AS (
+    SELECT userid, cast(languageid AS TEXT) || ":1" AS language
+    FROM known_languages
+)
+SELECT userid, group_concat(language)
+    FROM joined
     GROUP BY userid;
 
 .output stdout

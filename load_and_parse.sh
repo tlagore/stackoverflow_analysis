@@ -13,18 +13,28 @@ then
         echo ""
         if [ "$reimport" = "y" ]
         then
+            echo -e "\e[1;32mLoading csvs into sqlite3 (loaddb.sql)...\e[0m"
+            time sqlite3 data/stackoverflowdb.db < loaddb.sql
+        fi
+    else
         echo -e "\e[1;32mLoading csvs into sqlite3 (loaddb.sql)...\e[0m"
         time sqlite3 data/stackoverflowdb.db < loaddb.sql
-        fi
     fi
 
     echo -e "\e[1;32mPerforming basket query to export to baskets.csv (basket_query.sql)...\e[0m"
     time sqlite3 data/stackoverflowdb.db < basket_query.sql
 
-    echo -e "\e[1;32mRemoving quotations from language column and renaming to 'baskets.txt'...\e[0m"
+    echo -e "\e[1;32mCleaning 'baskets.txt'...\e[0m"
     # sed script obtained from https://stackoverflow.com/a/38159593/4089216
-    time sed -i 's/\"//g' data/baskets.csv
-    mv data/baskets.csv data/baskets.txt
+    # remove quotations
+    sed -i 's/\"//g' data/baskets.txt
+
+    echo -e "\e[1;32mCleaning 'documents.txt'...\e[0m"
+    # remove quotations
+    sed -i 's/\"//g' data/documents.txt
+    # replace comma with space
+    sed -i 's/,/ /g' data/documents.txt
+    
 
     if [ "$response" = "y" ]
     then
