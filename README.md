@@ -35,7 +35,7 @@ example:
 ...
 ```
 
-### Performing the clean:
+## Performing the clean:
 run `./load_and_parse.sh`
 
 If you would like to keep the csvs in the sqlite3 database, then press `n` at the prompt.
@@ -63,9 +63,9 @@ Done
 Expected running time ~15-20 minutes.
 
 The script performs 4 steps:
-1. Create the schema for the CSVs and the resultant output table and import the CSV data into their relevant tables
+### 1. Create the schema for the CSVs and the resultant output table and import the CSV data into their relevant tables
     - see `loaddb.sql`
-2. Query the newly created tables to get data into the expected format
+### 2. Query the newly created tables to get data into the expected format
     - see `basket_query.sql`
 i.e.
 | userid | languageid | language |
@@ -75,14 +75,14 @@ i.e.
 |1|110|javascript|
 |...|...|
 
-3. Query this populated table into two different files
+### 3. Query this populated table into two different files
 - baskets.txt, example:
 `1,"c#,java,javascript,objective-c,php,sql"`
 
 - documents.txt, example:
 `1,"30:1,108:1,110:1,156:1,162:1,200:1"`
 
-4. Finalize format by removing quotations and replacing commas (in the case of libsvm format for documents.txt)
+### 4. Finalize format by removing quotations and replacing commas (in the case of libsvm format for documents.txt)
 - baskets.txt, example:
 `1,c#,java,javascript,objective-c,php,sql`
 
