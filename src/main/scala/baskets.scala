@@ -1,14 +1,13 @@
 package stackoverflow
 
-import org.apache.spark.ml.fpm.FPGrowth
-import org.apache.spark.SparkConf
-import org.apache.spark.SparkContext
 import org.apache.log4j.{Level, Logger}
-import org.apache.spark.sql.{Row, SparkSession}
-import scala.collection.JavaConverters._
-import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema
+import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.ml.fpm.FPGrowth
+import org.apache.spark.sql.SparkSession
 
-import scala.collection.immutable.ArraySeq
+// lets us convert from java collection to scala
+import scala.jdk.CollectionConverters._
+//import scala.collection.JavaConverters._
 
 case class FreqMap(freq: Long, items:Array[String]) {
   def compareDesc(that: FreqMap): Int = {
@@ -22,6 +21,8 @@ case class FreqMap(freq: Long, items:Array[String]) {
 }
 
 object Baskets extends App {
+  if (args.length != 1)
+    throw new IllegalArgumentException("Missing required argument for filename.")
 
   val rootLogger = Logger.getRootLogger()
   rootLogger.setLevel(Level.ERROR)
@@ -39,6 +40,7 @@ object Baskets extends App {
 
   sc.setLogLevel("ERROR") // avoid all those messages going on
 
+  // allow us to convert to case class
   import session.implicits._
 
   val filename = args(0)
@@ -47,6 +49,8 @@ object Baskets extends App {
   val basketsRDD = sc.textFile(filename).map(
     _.split(",").toList
   ).toDF("items")
+
+  basketsRDD.foreach(row => if (row(0) == 9634) println(row))
 
   val fpgrowth = new FPGrowth().setItemsCol("items").setMinSupport(0.02).setMinConfidence(0.5)
   val model = fpgrowth.fit(basketsRDD)

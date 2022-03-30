@@ -7,8 +7,21 @@ import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.SparkSession
+import scala.jdk.CollectionConverters._
+
+case class Cluster(clusterId: Int, language_and_weight: List[(String, Double)]){
+  def printCluster(): Unit =
+  {
+    println(s"Cluster $clusterId\n")
+    language_and_weight.foreach(pair => println(s"${pair._1},${pair._2}"))
+    println("")
+  }
+}
+case class Topic(topic: Int, termIndices: List[Int], termWeights: List[Double])
 
 object Topics extends App {
+  if (args.length != 1)
+    throw new IllegalArgumentException("Missing required argument for filename.")
 
   val rootLogger = Logger.getRootLogger()
   rootLogger.setLevel(Level.ERROR)
@@ -25,34 +38,71 @@ object Topics extends App {
       .config("spark.master", "local")
       .getOrCreate()
 
+
   val filename = args(0)
 
   // remove line below and replace with your code
 
-  println("Reading from file ", filename)
+  println(s"Reading from file '$filename''")
 
-  // Loads data.
+  val sourceFile = Source.fromFile("data/languages.csv")
+
+  // split at 1 to avoid the header
+  val languageMap = sourceFile.getLines.splitAt(1)._2
+    .foldLeft(Map[Int, String]())(
+    (accumMap, line) => {
+      val split = line.split(",")
+
+      if (accumMap.contains(split(0).toInt))
+        accumMap
+      else
+        accumMap + (split(0).toInt -> split(1))
+    }
+  )
+
+  val minWeight = 0.005
+
   val dataset = spark.read.format("libsvm")
     .load(filename)
 
-  // Trains a LDA model.
-  val lda = new LDA().setK(10).setMaxIter(10)
+  println("Training the model...")
+  val lda = new LDA().setK(25).setMaxIter(20).setSeed(0L)
   val model = lda.fit(dataset)
 
-  val ll = model.logLikelihood(dataset)
-  val lp = model.logPerplexity(dataset)
-  println(s"The lower bound on the log likelihood of the entire corpus: $ll")
-  println(s"The upper bound on perplexity: $lp")
+  // required for using .as
+  import spark.implicits._
 
   // Describe topics.
-  val topics = model.describeTopics(3)
-  println("The topics described by their top-weighted terms:")
-  topics.show(false)
+  val topics = model.describeTopics()
+    .as[Topic].collectAsList()
+    .asScala.toList
+
+  val clusters: List[Cluster] = topics.foldLeft(List[Cluster]()) ((accum, cluster) =>
+    {
+      cluster match {
+        case Topic(topicId, elementIds, weights) =>
+          val languageWithWeights = elementIds.zip(weights)
+            .filter(_._2 >= minWeight)
+            .map(pair => languageMap.get(pair._1) match {
+              case Some(languageName) => (pair._1.toString + "-" + languageName, pair._2)
+            })
+          accum :+ Cluster(topicId, languageWithWeights.sortWith(_._2 > _._2))
+        case _ => accum
+      }
+  })
+
+  model.describeTopics().show()
+  clusters.foreach(_.printCluster())
+//  println("The topics described by their top-weighted terms:")
+//  topics.show(false)
 
   // Shows the result.
+//  val transformed = model.transform(dataset)
+//  transformed.show(false)
+
   val transformed = model.transform(dataset)
   transformed.show(false)
-
+  sourceFile.close()
   sc.stop()
 
 

@@ -11,19 +11,22 @@ then
     then
         read -n 1 -r -p "'data/stackoverflowdb.db' already exists. Reimport? (y/n): " reimport
         echo ""
-        if [ "$reimport" = "y" ]
-        then
-            echo -e "\e[1;32mLoading csvs into sqlite3 (loaddb.sql)...\e[0m"
-            time sqlite3 data/stackoverflowdb.db < loaddb.sql
-        fi
     else
-        echo -e "\e[1;32mLoading csvs into sqlite3 (loaddb.sql)...\e[0m"
-        time sqlite3 data/stackoverflowdb.db < loaddb.sql
+        reimport = "y"
     fi
 
-    echo -e "\e[1;32mPerforming basket query to export to baskets.csv (basket_query.sql)...\e[0m"
-    time sqlite3 data/stackoverflowdb.db < basket_query.sql
+    if [ "$reimport" = "y" ]
+    then
+        echo -e "\e[1;32mLoading csvs into sqlite3 (loaddb.sql)...\e[0m"
+        time sqlite3 data/stackoverflowdb.db < loaddb.sql
 
+        echo -e "\e[1;32mPerforming aggregation query (language_query.sql)...\e[0m"
+        time sqlite3 data/stackoverflowdb.db < language_query.sql
+    fi
+
+    echo -e "\e[1;32mPerforming file generation query (file_query.sql)...\e[0m"
+    time sqlite3 data/stackoverflowdb.db < file_query.sql
+    
     echo -e "\e[1;32mCleaning 'baskets.txt'...\e[0m"
     # sed script obtained from https://stackoverflow.com/a/38159593/4089216
     # remove quotations
