@@ -63,9 +63,11 @@ object Topics extends App {
   val minWeight = 0.05
 
   val dataset = spark.read
-//    .option("numFeatures", (languageMap.size+1).toString)
+    .option("numFeatures", (languageMap.size+1).toString)
     .format("libsvm")
     .load(filename)
+
+  dataset.show(true)
 
   println("Training the model...")
   val lda = new LDA().setK(25).setMaxIter(20).setSeed(0L)
@@ -74,11 +76,8 @@ object Topics extends App {
   // required for using .as
   import spark.implicits._
 
-  // Describe topics.
-  val tpcs = model.describeTopics()
-  println("The topics described by their top-weighted terms:")
-  tpcs.show(false)
-
+  val transformed = model.transform(dataset)
+  transformed.show(false)
 
   // Describe topics.
   val topics = model.describeTopics()
@@ -92,7 +91,7 @@ object Topics extends App {
           val languageWithWeights = elementIds.zip(weights)
             .filter(_._2 >= minWeight)
             .map(pair => languageMap.get(pair._1) match {
-              case Some(languageName) => (pair._1.toString + "-" + languageName, pair._2)
+              case Some(languageName) => (languageName, pair._2)
             })
           accum :+ Cluster(topicId, languageWithWeights.sortWith(_._2 > _._2))
         case _ => accum
@@ -107,8 +106,6 @@ object Topics extends App {
 //  val transformed = model.transform(dataset)
 //  transformed.show(false)
 
-  val transformed = model.transform(dataset)
-  transformed.show(false)
   sourceFile.close()
   sc.stop()
 
