@@ -11,8 +11,9 @@ SELECT userid, group_concat(language)
 WITH joined AS (
     SELECT userid, cast(languageid AS TEXT) || ":1" AS language
     FROM known_languages
+    ORDER BY languageid
 )
-SELECT userid, group_concat(language)
+SELECT userid, group_concat(language) AS language
     FROM joined
     GROUP BY userid;
 

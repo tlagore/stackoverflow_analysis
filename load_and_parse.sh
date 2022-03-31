@@ -19,10 +19,10 @@ then
     then
         echo -e "\e[1;32mLoading csvs into sqlite3 (loaddb.sql)...\e[0m"
         time sqlite3 data/stackoverflowdb.db < loaddb.sql
-
-        echo -e "\e[1;32mPerforming aggregation query (language_query.sql)...\e[0m"
-        time sqlite3 data/stackoverflowdb.db < language_query.sql
     fi
+    
+    echo -e "\e[1;32mPerforming aggregation query (language_query.sql)...\e[0m"
+    time sqlite3 data/stackoverflowdb.db < language_query.sql
 
     echo -e "\e[1;32mPerforming file generation query (file_query.sql)...\e[0m"
     time sqlite3 data/stackoverflowdb.db < file_query.sql

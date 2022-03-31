@@ -53,16 +53,18 @@ object Topics extends App {
     (accumMap, line) => {
       val split = line.split(",")
 
-      if (accumMap.contains(split(0).toInt))
+      if (accumMap.contains(split(0).toInt-1))
         accumMap
       else
-        accumMap + (split(0).toInt -> split(1))
+        accumMap + (split(0).toInt-1 -> split(1))
     }
   )
 
-  val minWeight = 0.005
+  val minWeight = 0.05
 
-  val dataset = spark.read.format("libsvm")
+  val dataset = spark.read
+//    .option("numFeatures", (languageMap.size+1).toString)
+    .format("libsvm")
     .load(filename)
 
   println("Training the model...")
@@ -71,6 +73,12 @@ object Topics extends App {
 
   // required for using .as
   import spark.implicits._
+
+  // Describe topics.
+  val tpcs = model.describeTopics()
+  println("The topics described by their top-weighted terms:")
+  tpcs.show(false)
+
 
   // Describe topics.
   val topics = model.describeTopics()
@@ -91,7 +99,6 @@ object Topics extends App {
       }
   })
 
-  model.describeTopics().show()
   clusters.foreach(_.printCluster())
 //  println("The topics described by their top-weighted terms:")
 //  topics.show(false)

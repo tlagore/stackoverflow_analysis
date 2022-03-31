@@ -54,9 +54,9 @@ CREATE UNIQUE INDEX language_index ON languages(languageid);
 CREATE INDEX posttag_index on posttags(postid);
 
 -- DELETE any languages that apepar more than once (IDs should be unique)
-DELETE FROM languages
-WHERE rowid NOT IN
-    ( SELECT min(rowid)
-        FROM languages
-        GROUP BY language
-        ORDER BY languageid);
+-- DELETE FROM languages
+-- WHERE rowid NOT IN
+--     ( SELECT min(rowid)
+--         FROM languages
+--         GROUP BY language
+--         ORDER BY languageid);
