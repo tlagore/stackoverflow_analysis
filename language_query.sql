@@ -42,6 +42,7 @@ known_languages AS (
         ON plc.userid == s.userid AND plc.postid == s.postid
     INNER JOIN language_count_gt_1 AS lc
         ON lc.userid == s.userid and lc.language == s.language
+),
 -- remove users that only know one language
 users_gt_1_language AS (
     SELECT userid, COUNT(*)
