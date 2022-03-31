@@ -60,7 +60,7 @@ Did not delete temporary database 'data/stackoverflowdb.db'
 Done
 ```
 
-Expected running time ~15-20 minutes.
+Expected running time ~5-10 minutes.
 
 The script performs 4 steps:
 ### 1. Create the schema for the CSVs and the resultant output table and import the CSV data into their relevant tables

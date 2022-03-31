@@ -52,5 +52,5 @@ users_gt_1_language AS (
 INSERT INTO known_languages (userid, languageid, language) 
     SELECT kl.userid, l.languageid, kl.language FROM known_languages AS kl
     INNER JOIN languages AS l ON l.language = kl.language
-    INNER JOIN users_gt_1_language AS ug1l ON ug1l.userid == kl.userid; 
+    INNER JOIN users_gt_1_language AS ug1l ON ug1l.userid == kl.userid
     ORDER BY kl.language;
