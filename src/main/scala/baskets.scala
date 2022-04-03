@@ -50,8 +50,6 @@ object Baskets extends App {
     _.split(",").toList
   ).toDF("items")
 
-  basketsRDD.foreach(row => if (row(0) == 9634) println(row))
-
   val fpgrowth = new FPGrowth().setItemsCol("items").setMinSupport(0.02).setMinConfidence(0.5)
   val model = fpgrowth.fit(basketsRDD)
 
@@ -66,4 +64,6 @@ object Baskets extends App {
   {
     println(s"${item.freq},${item.items.mkString(",")}")
   })
+
+  sc.stop()
 }

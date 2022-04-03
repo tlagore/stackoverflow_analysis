@@ -89,3 +89,6 @@ Vagrantfile
 *.pdf
 data/*
 project/*
+
+!data/documents.txt
+!data/baskets.txt

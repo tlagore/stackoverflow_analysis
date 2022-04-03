@@ -38,8 +38,6 @@ language_count_gt_1 AS
     HAVING COUNT(*) > 1),
 known_languages AS (
     SELECT DISTINCT s.userid, s.language AS language FROM filtered AS s
-    INNER JOIN post_languages_count_of_1 AS plc
-        ON plc.userid == s.userid AND plc.postid == s.postid
     INNER JOIN language_count_gt_1 AS lc
         ON lc.userid == s.userid and lc.language == s.language
 ),
