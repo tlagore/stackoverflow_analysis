@@ -67,8 +67,6 @@ object Topics extends App {
     .format("libsvm")
     .load(filename)
 
-  dataset.show(true)
-
   println("Training the model...")
   val lda = new LDA().setK(25).setMaxIter(20).setSeed(0L)
   val model = lda.fit(dataset)
@@ -77,7 +75,6 @@ object Topics extends App {
   import spark.implicits._
 
   val transformed = model.transform(dataset)
-  transformed.show(false)
 
   // Describe topics.
   val topics = model.describeTopics()
@@ -99,12 +96,6 @@ object Topics extends App {
   })
 
   clusters.foreach(_.printCluster())
-//  println("The topics described by their top-weighted terms:")
-//  topics.show(false)
-
-  // Shows the result.
-//  val transformed = model.transform(dataset)
-//  transformed.show(false)
 
   sourceFile.close()
   sc.stop()
