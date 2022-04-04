@@ -12,7 +12,7 @@ then
         read -n 1 -r -p "'data/stackoverflowdb.db' already exists. Reimport? (y/n): " reimport
         echo ""
     else
-        reimport = "y"
+        reimport="y"
     fi
 
     if [ "$reimport" = "y" ]
