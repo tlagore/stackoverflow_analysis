@@ -35,6 +35,10 @@ example:
 ...
 ```
 
+<div align="center" style="margin:5%;border:1px solid black">
+    Note that load_and_parse.sh expects a folder called data/ to be at the root of the script, with the necessary csv files within it
+</div>
+
 ## Performing the clean:
 run `./load_and_parse.sh`
 
@@ -43,21 +47,29 @@ If you would like to keep the csvs in the sqlite3 database, then press `n` at th
 Example output:
 
 ```
+./load_and_parse.sh 
 Would you like to delete the temporary sqlite3 database after creating baskets.csv? (y/n): n
+'data/stackoverflowdb.db' already exists. Reimport? (y/n): y
 Loading csvs into sqlite3 (loaddb.sql)...
 
-real	2m17.187s
-user	1m47.782s
-sys	0m15.403s
-Performing basket query to export to baskets.csv (basket_query.sql)...
+real	3m14.333s
+user	1m44.955s
+sys	0m45.939s
+Performing aggregation query (language_query.sql)...
 
-real	11m3.389s
-user	7m59.321s
-sys	3m1.738s
+real	3m36.301s
+user	2m32.660s
+sys	1m2.729s
+Performing file generation query (file_query.sql)...
+
+real	0m1.140s
+user	0m1.041s
+sys	0m0.082s
 Cleaning 'baskets.txt'...
 Cleaning 'documents.txt'...
 Did not delete temporary database 'data/stackoverflowdb.db'
 Done
+
 ```
 
 Expected running time ~5-10 minutes.
@@ -65,11 +77,11 @@ Expected running time ~5-10 minutes.
 The script performs 4 steps:
 ### 1. Create the schema for the CSVs and the resultant output table and import the CSV data into their relevant tables
 
-    - see `loaddb.sql`
+- see `loaddb.sql`
 
 ### 2. Query the newly created tables to get data into the expected format
 
-    - see `basket_query.sql`
+- see `language_query.sql`
 
 i.e.
 | userid | languageid | language |
@@ -80,6 +92,8 @@ i.e.
 |...|...|
 
 ### 3. Query this populated table into two different files
+
+- see `file_query.sql`
 
 - baskets.txt, example:
 
@@ -98,3 +112,5 @@ i.e.
 - documents.txt, example:
 
 `1 30:1 108:1 110:1 156:1 162:1 200:1`
+
+# Analysis
