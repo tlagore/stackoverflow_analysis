@@ -6,6 +6,12 @@ import org.apache.spark.sql.types.{DateType, IntegerType, StringType, StructType
 import java.io.FileNotFoundException
 import java.nio.file.{Files, Paths}
 
+/*
+  ************************************************************************************************************************
+  NOTE::: This code went unused, as it ran too slowly. Felt it was better to keep it for reference than removing the code.
+  ************************************************************************************************************************
+ */
+
 object SOFile extends Enumeration {
   val Posts, Languages, Users, Tags = Value
 }

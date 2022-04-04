@@ -4,6 +4,11 @@ import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
 
+/*
+  ************************************************************************************************************************
+  NOTE::: This code went unused, as it ran too slowly. Felt it was better to keep it for reference than removing the code.
+  ************************************************************************************************************************
+ */
 class DataFrameHandler(data_dir: String) extends AutoCloseable
 {
   val rootLogger = Logger.getRootLogger

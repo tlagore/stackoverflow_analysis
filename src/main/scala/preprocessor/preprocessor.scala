@@ -2,6 +2,11 @@ package preprocessor
 
 import scala.util.Using
 
+/*
+  ************************************************************************************************************************
+  NOTE::: This code went unused, as it ran too slowly. Felt it was better to keep it for reference than removing the code.
+  ************************************************************************************************************************
+ */
 object preprocessor extends App {
   if (args.length != 1)
     throw new IllegalArgumentException(s"Improper usage, missing data_directory argument. (Data directory of StackOverflow data files)")
