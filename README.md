@@ -35,11 +35,14 @@ example:
 ...
 ```
 
-<div align="center" style="margin:5%;border:1px solid black">
+
+## Performing the clean:
+
+<div align="center" style="margin:5%;border:1px solid cornflowerblue">
     Note that load_and_parse.sh expects a folder called data/ to be at the root of the script, with the necessary csv files within it
 </div>
 
-## Performing the clean:
+
 run `./load_and_parse.sh`
 
 If you would like to keep the csvs in the sqlite3 database, then press `n` at the prompt.
