@@ -38,11 +38,11 @@ example:
 
 ## Performing the clean:
 
-<div align="center" style="margin:5%;border:1px solid cornflowerblue">
-<kbd>
-    Note that load_and_parse.sh expects a folder called data/ to be at the root of the script, with the necessary csv files within it
-</kbd>
+<div align="center" style="max-width:50%;">
+    <b>Note that load_and_parse.sh expects a folder called data/ to be at the root of the script, with the necessary csv files within it</b>
 </div>
+
+<hr>
 
 
 run `./load_and_parse.sh`
