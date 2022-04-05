@@ -66,4 +66,5 @@ object Baskets extends App {
   })
 
   sc.stop()
+  session.stop()
 }

@@ -38,7 +38,6 @@ object Topics extends App {
       .config("spark.master", "local")
       .getOrCreate()
 
-
   val filename = args(0)
 
   // remove line below and replace with your code
@@ -48,7 +47,7 @@ object Topics extends App {
   val sourceFile = Source.fromFile("data/languages.csv")
 
   // split at 1 to avoid the header
-  val languageMap = sourceFile.getLines.splitAt(1)._2
+  val languageMap = sourceFile.getLines().splitAt(1)._2
     .foldLeft(Map[Int, String]())(
     (accumMap, line) => {
       val split = line.split(",")
@@ -89,6 +88,9 @@ object Topics extends App {
             .filter(_._2 >= minWeight)
             .map(pair => languageMap.get(pair._1) match {
               case Some(languageName) => (languageName, pair._2)
+
+              // won't ever happen, but just ensuring search is exhaustive
+              case None => ("Unknown", 0.0)
             })
           accum :+ Cluster(topicId, languageWithWeights.sortWith(_._2 > _._2))
         case _ => accum
@@ -99,6 +101,5 @@ object Topics extends App {
 
   sourceFile.close()
   sc.stop()
-
-
+  spark.stop()
 }

@@ -119,3 +119,24 @@ i.e.
 `1 30:1 108:1 110:1 156:1 162:1 200:1`
 
 # Analysis
+### Basket Analysis
+
+Run `run-baskets.sh` to run the basket analysis.
+
+This will output a file to data/basket_results.txt with results of the basket analysis
+
+### Topic Analysis
+
+Run `run-topics.sh` to run the topic analysis
+
+This will output a file to data/clusters.txt with results of the topic clustering
+
+### NOTE ON RUNNING THE ABOVE:
+
+An error may be thrown at the end, unrelated to the execution of the programs. To avoid this,
+
+1. Run sbt package
+2. For basket analysis
+   1. `<path-to-spark>/bin/spark-submit --class stackoverflow.Baskets target/scala-2.13/stackoverflow_2.13-0.1.0-SNAPSHOT.jar data/baskets.txt`
+3. For topic analysis:
+   1. `<path-to-spark>/bin/spark-submit --class stackoverflow.Topics target/scala-2.13/stackoverflow_2.13-0.1.0-SNAPSHOT.jar data/documents.txt`
