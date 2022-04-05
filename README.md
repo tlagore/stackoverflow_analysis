@@ -3,10 +3,15 @@ This project takes a large set of StackOverflow Data and performs data cleaning 
 
 To simulate big data projects where data cannot all be read into memory, the project uses only techniques that do not read the entire dataset into memory.
 
+# Requirements
+* Must be run on Linux distribution
+* sqlite3 installed and added to path (`load_and_parse.sh` calls `sqlite3`)
+* sbt 
+
 # StackOverflow Data
 The data consists of
 
-|file|size|
+|file|size| 
 |-|-|
 |posts.csv|4.13GB|
 |poststags.csv|770MB|
@@ -38,11 +43,11 @@ example:
 
 ## Performing the clean:
 
-<div align="center" style="max-width:50%;">
-    <b>Note that load_and_parse.sh expects a folder called data/ to be at the root of the script, with the necessary csv files within it</b>
-</div>
+1. <b>Note that load_and_parse.sh expects a folder called data/ to be at the root of the script, with the necessary csv files within it</b>
+2. <b>This script should be run on Linux - the `sed` script will not correctly work on macOS</b>
 
 <hr>
+
 
 
 run `./load_and_parse.sh`
